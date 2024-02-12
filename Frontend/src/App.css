@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.exchange-rate-chart::-webkit-scrollbar, .form-group::-webkit-scrollbar, .oveflow-auto::-webkit-scrollbar {
+    display: none;
+}
