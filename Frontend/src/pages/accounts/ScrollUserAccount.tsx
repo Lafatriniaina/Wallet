@@ -1,8 +1,20 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FiSearch } from 'react-icons/fi'
 import { Link } from 'react-router-dom'
 import { IoFastFood } from "react-icons/io5";
+import { useEffect, useState } from 'react';
+import { FetchAverageBalance } from '../../api/AccountsApi';
 
 function ScrollUserAccount() {
+  const [averageBalance, setAverageBalance] = useState([]);
+  const user_id = 13;
+
+  useEffect(() => {
+    FetchAverageBalance(user_id)
+      .then((data: any) => setAverageBalance(data.average_balance))
+      .catch((err: any) => console.error("Erreur lors de la récupération des meilleurs gagnants : ", err));
+  }, [])
+
   return (
     <div className="lg:w-[70%] md:w-[60%] sm:w-[90%] h-screen rounded-xl overflow-auto">
         <div className="flex justify-between items-center m-6">
@@ -28,9 +40,9 @@ function ScrollUserAccount() {
           <div className="flex items-center">
             <div className="px-4 py-2 mx-4 bg-gray-950 rounded-xl font-bold text-white">Envoyer</div>
             <div className="px-4 py-2 border-[2px] border-black rounded-xl font-bold">Remplir à nouveau</div>
-            <div className="ms-8 text-gray-700 font-bold">Solde total</div>
+            <div className="ms-8 text-gray-700 font-bold">Solde moyenne</div>
           </div>
-          <p className="font-bold me-6">950.235.000,45 MGA</p>
+          <p className="font-bold me-6">{averageBalance} MGA</p>
         </div>
 
         <div className="h-[300px] bg-white w-full rounded-xl mb-10">
