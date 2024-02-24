@@ -53,9 +53,11 @@ class CategoriesSerializer(serializers.ModelSerializer):
 
 
 class TransactionsSerializer(serializers.ModelSerializer):
+    category = serializers.StringRelatedField(source='category.category_type')
+
     class Meta:
         model = Transactions
-        fields = '__all__'
+        fields = ['transaction_type', 'date', 'amount', 'account', 'category']
 
 
 class SalarySerializer(serializers.ModelSerializer):
