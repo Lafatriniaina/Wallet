@@ -13,7 +13,7 @@ function AsideUserAccount() {
   const cryptocurrencies = ["BTC", "USDT", "ETH"];
 
   return (
-    <div className="w-[450px] lg:block md:block sm:hidden h-screen rounded-s-3xl bg-white ms-4">
+    <div className="w-[450px] lg:block md:block sm:hidden h-screen rounded-s-3xl bg-white ms-4 overflow-auto">
         <div className="flex justify-evenly items-center h-[60px] mt-6">
             <p className="font-bold">Lafatra Niaina</p>
             <img src={profil} alt="profile" className="w-[45px] h-[45px] rounded-full -ms-4" />
@@ -37,7 +37,7 @@ function AsideUserAccount() {
           <div className="text-2xl font-bold text-white">900.900.000 MGA</div>
         </div>
 
-        <div className="w-[80%] h-[400px] rounded-2xl m-auto mt-7 p-4 bg-slate-100">
+        <div className="w-[80%] h-[400px] rounded-2xl m-auto mt-7 p-4 bg-slate-100 mb-8">
           <div className="flex justify-around">
             <p className="font-bold">Achat rapide</p>
             <p className="font-bold">Echange rapide</p>

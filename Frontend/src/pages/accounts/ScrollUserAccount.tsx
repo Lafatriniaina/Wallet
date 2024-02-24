@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { FiSearch } from 'react-icons/fi'
 import { Link } from 'react-router-dom'
-import { IoFastFood } from "react-icons/io5";
 import { useEffect, useState } from 'react';
 import { FetchAverageBalance } from '../../api/AccountsApi';
+import { LatestTransactionsLists } from '../../api/TransactionsApi';
 
 function ScrollUserAccount() {
   const [averageBalance, setAverageBalance] = useState([]);
+  const [transactionsLists, setTransactionsLists] = useState([]);
   const user_id = 13;
 
   useEffect(() => {
@@ -14,6 +15,23 @@ function ScrollUserAccount() {
       .then((data: any) => setAverageBalance(data.average_balance))
       .catch((err: any) => console.error("Erreur lors de la récupération des meilleurs gagnants : ", err));
   }, [])
+
+  useEffect(() => {
+    LatestTransactionsLists(user_id)
+      .then((data: any) => setTransactionsLists(data))
+      .catch((err: any) => console.error("Erreur lors de la récupération des meilleurs gagnants : ", err));
+  }, [])
+
+  function formatTransactionDate(dateString: any) {
+    const options: Intl.DateTimeFormatOptions = {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    };
+    const formattedDate = new Date(dateString).toLocaleDateString('fr-FR', options);
+    return formattedDate;
+  }  
 
   return (
     <div className="lg:w-[70%] md:w-[60%] sm:w-[90%] h-screen rounded-xl overflow-auto">
@@ -45,67 +63,49 @@ function ScrollUserAccount() {
           <p className="font-bold me-6">{averageBalance} MGA</p>
         </div>
 
-        <div className="h-[300px] bg-white w-full rounded-xl mb-10">
+        <div className="h-[310px] bg-white w-full rounded-xl mb-10 pb-[10px]">
           <div className="flex justify-between mt-6 mx-4">
-            <p className="font-bold mt-5">Transactions</p>
+            <p className="font-bold mt-5 text-lg">Transactions récentes</p>
             <Link to="/Transactions">
-              <p className="font-bold mt-5" role="button">Voir tous</p>
+              <p className="font-bold mt-5 text-lg" role="button">Voir tous</p>
             </Link>
           </div>
           <div className="mt-4 overflow-auto">
-          <div className="flex h-12 items-center justify-start">
-              <p className="flex items-center w-1/4 ms-4 font-bold text-lg">
+            <div className="flex h-12 items-center justify-start">
+              <p className="flex items-center w-1/4 ms-4 font-bold">
                 <p className="text-red-500">#</p>Types
               </p>
-              <p className="flex items-center w-1/4 font-bold text-lg">
+              <p className="flex items-center w-1/4 font-bold">
                 <p className="text-red-500">#</p>Dates
               </p>
-              <p className="flex items-center w-1/4 font-bold text-lg">
+              <p className="flex items-center w-1/4 font-bold">
                 <p className="text-red-500">#</p>Valeurs
               </p>
-              <p className="flex items-center w-1/4 font-bold text-lg">
+              <p className="flex items-center w-1/4 font-bold">
                 <p className="text-red-500">#</p>Status
               </p>
             </div>
-            <div className="flex h-16 items-center justify-start">
-              <p className="flex items-center w-1/4 ms-4">
-                <div className="p-[10px] rounded-full bg-blue-100">
-                  <IoFastFood size={30} color="blue" />
+            {transactionsLists.map((transaction, index) => {
+              return (
+                <div className="flex h-16 items-center justify-start" key={index}>
+                  <p className="flex items-center w-1/4 ms-4">
+                    <div className="px-4 py-2 rounded-full bg-blue-100 text-blue-950 font-bold text-4xl">
+                      {(transaction["transaction_type"] as string).charAt(0).toUpperCase()}
+                    </div>
+                    <p className="ml-4 text-slate-700">{transaction["transaction_type"]}</p>
+                  </p>
+                  <p className="w-1/4 text-slate-700">{formatTransactionDate(transaction["date"])}</p>
+                  <p className="w-1/4 font-bold">{transaction["amount"]} MGA</p>
+                  <p className="w-1/4">
+                    { 
+                    transaction["category"] == "expenses" ? 
+                      (<div className="w-[150px] py-2 px-4 rounded-full bg-red-100 text-center font-bold text-red-700">dépenses</div>) :
+                      (<div className="w-[150px] py-2 px-4 rounded-full bg-green-100 text-center font-bold text-green-700">revenus</div>)
+                    }
+                  </p>
                 </div>
-                <p className="ml-4 text-slate-700">Nourritures</p>
-              </p>
-              <p className="w-1/4 text-slate-700">Jan 31, 2023</p>
-              <p className="w-1/4 font-bold">120.000,00 MGA</p>
-              <p className="w-1/4">
-                <div className="w-[150px] py-2 px-4 rounded-full bg-red-100 text-center font-bold text-red-700">Dépenses</div>
-              </p>
-            </div>
-            <div className="flex h-16 items-center justify-start">
-              <p className="flex items-center w-1/4 ms-4">
-                <div className="p-[10px] rounded-full bg-purple-100">
-                  <IoFastFood size={30} color="purple" />
-                </div>
-                <p className="ml-4 text-slate-700">Nourritures</p>
-              </p>
-              <p className="w-1/4 text-slate-700">Jan 31, 2023</p>
-              <p className="w-1/4 font-bold">120.000,00 MGA</p>
-              <p className="w-1/4">
-                <div className="w-[150px] py-2 px-4 rounded-full bg-green-100 text-center font-bold text-green-700">Revenues</div>
-              </p>
-            </div>
-            <div className="flex h-16 items-center justify-start">
-              <p className="flex items-center w-1/4 ms-4">
-                <div className="p-[10px] rounded-full bg-blue-100">
-                  <IoFastFood size={30} color="blue" />
-                </div>
-                <p className="ml-4 text-slate-700">Nourritures</p>
-              </p>
-              <p className="w-1/4 text-slate-700">Jan 31, 2023</p>
-              <p className="w-1/4 font-bold">120.000,00 MGA</p>
-              <p className="w-1/4">
-                <div className="w-[150px] py-2 px-4 rounded-full bg-red-100 text-center font-bold text-red-700">Dépenses</div>
-              </p>
-            </div>
+              )})
+            }
           </div>
         </div>
         
