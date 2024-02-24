@@ -70,7 +70,7 @@ export const iconsLists: IIconLists = {
 export function getIconeName(icon: IconTypes): string {
     switch (icon) {
         case MdOutlineSportsBar:
-            return 'sports_bar_outlined';
+            return 'sports_bar_outlined'; 
         case MdCoffee:
             return 'coffee';
         case MdShoppingCart:
@@ -107,7 +107,8 @@ export function getIconeName(icon: IconTypes): string {
             return 'business';
         case SiNetflix:
             return 'netflix';
-        default: return 'undefined';
+        default: 
+            return 'unknown';
     }
 }
 

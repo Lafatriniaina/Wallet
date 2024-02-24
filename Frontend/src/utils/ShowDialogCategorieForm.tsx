@@ -4,7 +4,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import iconsLists from './IconsCategories';
 import { IconTypes } from '../types';
-// import { MdErrorOutline } from "react-icons/md";
 interface ActionProps {
     title: string;
     handleCloseDialog: () => void;
@@ -14,8 +13,8 @@ interface ActionProps {
 
 function ShowDialogCategoriesForm(props: ActionProps) {
     const [categorieName, setCategorieName] = useState("");
-    const [iconName, setIconName] = useState<IconTypes | null>(null);
-    const [selectedIcon, setSelectedIcon] = useState<IconTypes | null>(null);
+    const [iconName, setIconName] = useState<IconTypes | undefined>(undefined);
+    const [selectedIcon, setSelectedIcon] = useState<IconTypes | undefined>(undefined);
     
     const portalRoot = useRef(document.createElement('div'));
 
@@ -73,7 +72,6 @@ function ShowDialogCategoriesForm(props: ActionProps) {
                                             className={iconClass}
                                             onClick={() => {
                                                 handleIconClick(IconComponent);
-                                                console.log(IconComponent)
                                             }}
                                         >
                                             <IconComponent size={35} />
