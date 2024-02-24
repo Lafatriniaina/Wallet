@@ -122,6 +122,27 @@ class TransactionsViewSet(viewsets.ModelViewSet):
     queryset = Transactions.objects.all()
     serializer_class = TransactionsSerializer
 
+    # listes des transactions recentes avec leur type de catégorie
+    @action(detail=False, methods=['get'])
+    def latest_transactions(self, request):
+        user_id = request.query_params.get('user_id')
+        if user_id is None:
+            return Response({"error": "user_id is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user_id = int(user_id)
+        except ValueError:
+            return Response({"error": "user_id must be an integer"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Récupérer les  3 dernières transactions avec les données de la catégorie associée
+        latest_transactions = Transactions.objects.filter(account__user_id=user_id) \
+                                    .select_related('category') \
+                                    .order_by('-date')[:3]
+
+        # Sérialiser les résultats
+        serializer = self.get_serializer(latest_transactions, many=True)
+        return Response(serializer.data)
+
     # Calcul le total des transactions par type (revenus, dépenses) pour un utilisateur donné.
     @action(detail=False, methods=['get'])
     def total_transactions(self, request):
@@ -151,7 +172,6 @@ class TransactionsViewSet(viewsets.ModelViewSet):
         if user_id is None:
             return Response({"error": "user_id is required"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Trouver la catégorie de transaction la plus courante pour l'utilisateur donné
         common_category = (Transactions.objects
                            .filter(account__user_id=user_id)
                            .values('category').annotate(count=Count('category'))
@@ -170,7 +190,6 @@ class TransactionsViewSet(viewsets.ModelViewSet):
         if user_id is None:
             return Response({"error": "user_id is required"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Trouver les transactions les plus coûteuses pour l'utilisateur donné
         expensive_transactions = Transactions.objects.filter(account__user_id=user_id).order_by('-amount')[:5]
         # Assurez-vous que le sérialiseur TransactionsSerializer peut gérer correctement les requêtes d'agrégation
         serializer = self.get_serializer(expensive_transactions, many=True)
@@ -191,6 +210,7 @@ class TransactionsViewSet(viewsets.ModelViewSet):
         # Retourner les  12 mois les plus élevés
         return Response(transactions_by_month[:12])
 
+    # Afficher les listes des revenus les plus couteux
     @action(detail=False, methods=['get'])
     def top_gainers(self, request):
         user_id = request.query_params.get('user_id')
@@ -207,6 +227,7 @@ class TransactionsViewSet(viewsets.ModelViewSet):
             'transaction_type', 'category__category_name').annotate(total=Sum('amount')).order_by('-total')[:4]
         return Response(top_gainers)
 
+    # Afficher les listes des revenus les plus couteux
     @action(detail=False, methods=['get'])
     def top_losers(self, request):
         user_id = request.query_params.get('user_id')
