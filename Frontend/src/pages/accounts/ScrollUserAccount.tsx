@@ -89,7 +89,7 @@ function ScrollUserAccount() {
               return (
                 <div className="flex h-16 items-center justify-start" key={index}>
                   <p className="flex items-center w-1/4 ms-4">
-                    <div className="px-4 py-2 rounded-full bg-blue-100 text-blue-950 font-bold text-4xl">
+                    <div className="px-4 py-2 rounded-full bg-blue-100 text-blue-950 font-semibold text-4xl">
                       {(transaction["transaction_type"] as string).charAt(0).toUpperCase()}
                     </div>
                     <p className="ml-4 text-slate-700">{transaction["transaction_type"]}</p>
