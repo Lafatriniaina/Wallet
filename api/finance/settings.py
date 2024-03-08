@@ -25,19 +25,20 @@ SECRET_KEY = 'django-insecure-x2jnu!9%h(zps5y0(#ako=j=gp2r&nb4g(euf!%1!pfdj3th9f
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', '192.168.1.7']
+ALLOWED_HOSTS = ['0.0.0.0']
 
-CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOW_CREDENTIALS = True
 
-CORS_ALLOWED_ORIGINS = [
-   "http://localhost:5173",
-]
+CORS_ALLOWED_ORIGINS = ["http://localhost:5173"]
+
+CORS_ORIGIN_ALLOW_ALL = True
+SESSION_COOKIE_SECURE = False
+SESSION_COOKIE_HTTPONLY = False
 
 APPEND_SLASH = False
 
-# SECRET_KEY = '0000'
 JWT_EXPIRATION_DELTA = 60
 
 # Application definition
@@ -52,6 +53,7 @@ INSTALLED_APPS = [
     'Application.apps.ApplicationConfig',
     'rest_framework',
     'corsheaders',
+    'django_pandas',
 ]
 
 MIDDLEWARE = [

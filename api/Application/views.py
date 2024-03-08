@@ -1,14 +1,15 @@
 from django.db.models import Sum, Count, Avg
-from django.shortcuts import render
+from django.http import JsonResponse, HttpResponse
 from rest_framework.response import Response
+from rest_framework.utils import json
 from rest_framework.views import APIView
-from rest_framework.decorators import action
+from rest_framework.decorators import action, authentication_classes, permission_classes
 from .utils import generate_jwt_token
 from django.contrib.auth import logout
 from django.db.models.functions import TruncMonth
 
 from .models import Users, Accounts, Transactions, Salary, Expense, Revenu, Analytics, Categories
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, permissions, authentication
 from .serializers import UsersSerializer, AccountsSerializer, TransactionsSerializer, SalarySerializer, \
     ExpenseSerializer, RevenuSerializer, AnalyticsSerializer, UserLoginSerializer, UserCreationSerializer, \
     CategoriesSerializer
@@ -22,11 +23,18 @@ class LoginView(APIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         token = generate_jwt_token(user)
-        return Response({"token": token})
+        response = HttpResponse(content_type='application/json')
+        response.set_cookie('auth', token, max_age=3600, httponly=True, secure=False)
+        response.content = json.dumps({"token": token})
+
+        return response
 
 
+@authentication_classes([authentication.TokenAuthentication])
+@permission_classes([permissions.IsAuthenticated])
 def logout_view(request):
     logout(request)
+    return JsonResponse({"message": "Successfully logged out."}, status=200)
 
 
 class UsersViewSet(viewsets.ModelViewSet):
