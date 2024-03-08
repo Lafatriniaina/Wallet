@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: token != null ? '/all-forms' : '/preamble',
+      initialRoute: token != null ? '/transactions' : '/preamble',
       routes: {
         '/preamble': (context) => const Preamble(),
         '/account': (context) => const DetailsAccount(),
